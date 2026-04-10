@@ -54,6 +54,11 @@ jobs:
           mkdir -p artifacts
           cp build/app/outputs/flutter-apk/*.apk artifacts/
 
+      - uses: actions/upload-artifact@v7
+        with:
+          name: flutter-build
+          path: artifacts/ # or path/to/artifact
+
       # ─────────────── ONLY ON TAGS ───────────────
       - name: 🏷️ Create or update Release
         if: startsWith(github.ref, 'refs/tags/v')
