@@ -46,13 +46,13 @@ jobs:
       - name: ✅ Run tests
         run: flutter test --coverage
 
-      - name: 🏗️ Build APKs
-        run: flutter build apk --release --split-per-abi
+      - name: 🏗️ Build App Bundle (AAB)
+        run: flutter build appbundle --release
 
       - name: 📦 Prepare artifacts
         run: |
           mkdir -p artifacts
-          cp build/app/outputs/flutter-apk/*.apk artifacts/
+          cp build/app/outputs/bundle/release/*.aab artifacts/
 
       - uses: actions/upload-artifact@v7
         with:
@@ -66,5 +66,5 @@ jobs:
         with:
           tag:       ${{ github.ref_name }}
           name:      Release ${{ github.ref_name }}
-          artifacts: artifacts/*.apk
+          artifacts: artifacts/*.aab
           token:     ${{ secrets.GITHUB_TOKEN }}
