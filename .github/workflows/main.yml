@@ -46,8 +46,19 @@ jobs:
       - name: ✅ Run tests
         run: flutter test --coverage
 
+      - name: 🔑 Decode release keystore
+        run: echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > android/app/release.keystore 
+
       - name: 🏗️ Build App Bundle (AAB)
         run: flutter build appbundle --release
+        env: 
+          KEYSTORE_PATH: release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: ✅ Verify AAB signing 
+        run: jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.aab
 
       - name: 📦 Prepare artifacts
         run: |

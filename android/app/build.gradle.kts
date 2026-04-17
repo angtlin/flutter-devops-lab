@@ -40,17 +40,19 @@ android {
 
     // ────────── SIGNING CONFIGURATION ──────────
     signingConfigs {
-        create("release") {
-            val storeFile: String? = keystoreProperties["storeFile"]?.toString()
-            val storePassword: String? = keystoreProperties["storePassword"]?.toString()
-            val keyAlias: String? = keystoreProperties["keyAlias"]?.toString()
-            val keyPassword: String? = keystoreProperties["keyPassword"]?.toString()
+     create("release") {
+        // Use environment variables in CI; otherwise defaults to reading from local properties file
+        val resolvedStoreFile = System.getenv("KEYSTORE_PATH") ?: keystoreProperties["storeFile"]?.toString()
+        val resolvedStorePassword = System.getenv("KEYSTORE_PASSWORD") ?: keystoreProperties["storePassword"]?.toString()
+        val resolvedKeyAlias = System.getenv("KEY_ALIAS") ?: keystoreProperties["keyAlias"]?.toString()
+        val resolvedKeyPassword  = System.getenv("KEY_PASSWORD") ?: keystoreProperties["keyPassword"]?.toString()
 
-            if (storeFile != null && storePassword != null && keyAlias != null && keyPassword != null) {
-                this.storeFile = file(storeFile)
-                this.storePassword = storePassword
-                this.keyAlias = keyAlias
-                this.keyPassword = keyPassword
+        if (resolvedStoreFile != null && resolvedStorePassword != null &&
+            resolvedKeyAlias != null && resolvedKeyPassword != null) {
+                this.storeFile     = file(resolvedStoreFile)
+                this.storePassword = resolvedStorePassword
+                this.keyAlias      = resolvedKeyAlias
+                this.keyPassword   = resolvedKeyPassword
             }
         }
     }
