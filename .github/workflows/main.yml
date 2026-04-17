@@ -60,6 +60,10 @@ jobs:
       - name: ✅ Verify AAB signing 
         run: jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.aab
 
+      - name: 🧹 Clean up keystore
+        if: always()
+        run: rm -f android/app/release.keystore
+
       - name: 📦 Prepare artifacts
         run: |
           mkdir -p artifacts
@@ -79,3 +83,13 @@ jobs:
           name:      Release ${{ github.ref_name }}
           artifacts: artifacts/*.aab
           token:     ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🚀 Upload to Play Store (Internal Testing)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GPLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.exampleapp.flutter_devops_lab
+          releaseFiles: artifacts/*.aab
+          track: internal
+          status: completed
