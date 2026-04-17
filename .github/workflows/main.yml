@@ -163,4 +163,4 @@ jobs:
           packageName: com.exampleapp.flutter_devops_lab
           releaseFiles: artifacts/*.aab
           track: internal
-          status: completed
+          status: draft
