@@ -162,5 +162,5 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GPLAY_SERVICE_ACCOUNT_JSON }}
           packageName: com.exampleapp.flutter_devops_lab
           releaseFiles: artifacts/*.aab
-          track: internal
+          tracks: qa
           status: draft
