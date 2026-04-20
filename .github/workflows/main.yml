@@ -92,6 +92,18 @@ jobs:
       - name: 📥 Get dependencies
         run: flutter pub get
 
+      - name: 🔖 Assert pubspec version matches tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          PUBSPEC_VER=$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
+          TAG_VER="${{ github.ref_name }}"
+          TAG_VER="${TAG_VER#v}"
+          if [ "$PUBSPEC_VER" != "$TAG_VER" ]; then
+            echo "❌ Version mismatch: pubspec.yaml=$PUBSPEC_VER  tag=$TAG_VER"
+            exit 1
+          fi
+          echo "✅ Versions match: $PUBSPEC_VER"
+
       - name: 🔑 Decode release keystore
         run: echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > android/app/release.keystore
 
